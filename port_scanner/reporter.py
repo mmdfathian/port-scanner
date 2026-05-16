@@ -1,7 +1,7 @@
-from rich.console import Console
-from rich.table import Table
 from rich import box
+from rich.console import Console
 from rich.panel import Panel
+from rich.table import Table
 from rich.text import Text
 
 console = Console()
@@ -26,7 +26,6 @@ def print_report(
         end_port: پایان محدوده اسکن
         duration: مدت زمان اسکن به ثانیه
     """
-    # هدر
     info = Text()
     info.append("هدف    : ", style="bold cyan")
     info.append(f"{host} ({ip})\n", style="white")
@@ -52,7 +51,4 @@ def print_report(
 
         console.print(table)
     else:
-        console.print(
-            Panel("[bold red]هیچ پورت بازی یافت نشد.[/bold red]", expand=False)
-        )
-
+        console.print(Panel("[bold red]هیچ پورت بازی یافت نشد.[/bold red]", expand=False))
