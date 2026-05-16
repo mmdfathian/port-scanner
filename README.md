@@ -10,13 +10,14 @@
 
 - اسکن موازی با ThreadPoolExecutor (بسیار سریع)
 - خروجی رنگی و زیبا با کتابخانه `rich`
-- نمایش spinner انیمیشن حین اسکن
 - نمایش نام سرویس هر پورت (http، ssh، ftp و ...)
 - پشتیبانی از دامنه و IP
-- گزارش جدولی با زمان اجرا
+- گزارش جدولی با زمان اجرا و عملکرد (پورت/ثانیه)
 - خروجی JSON برای استفاده در ابزارهای دیگر
 - ذخیره گزارش در فایل
 - رابط command line کامل
+- اعتبار‌سنجی محدوده پورت (1-65535)
+- Retry logic برای اتصالات ناپایدار
 
 ---
 
@@ -67,12 +68,21 @@ port-scanner google.com --output json --save result.json
 {
   "host": "google.com",
   "ip": "142.250.185.46",
-  "range": { "start": 1, "end": 1024 },
+  "range": {
+    "start": 1,
+    "end": 1024
+  },
   "duration_seconds": 3.21,
   "open_ports_count": 2,
   "open_ports": [
-    { "port": 80, "service": "http" },
-    { "port": 443, "service": "https" }
+    {
+      "port": 80,
+      "service": "http"
+    },
+    {
+      "port": 443,
+      "service": "https"
+    }
   ]
 }
 ```
