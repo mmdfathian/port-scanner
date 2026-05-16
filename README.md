@@ -14,6 +14,8 @@
 - نمایش نام سرویس هر پورت (http، ssh، ftp و ...)
 - پشتیبانی از دامنه و IP
 - گزارش جدولی با زمان اجرا
+- خروجی JSON برای استفاده در ابزارهای دیگر
+- ذخیره گزارش در فایل
 - رابط command line کامل
 
 ---
@@ -39,6 +41,12 @@ port-scanner 192.168.1.1 -s 1 -e 500
 
 # با timeout و thread سفارشی
 port-scanner example.com -s 1 -e 65535 -t 0.5 -w 200
+
+# خروجی JSON
+port-scanner google.com --output json
+
+# ذخیره خروجی JSON در فایل
+port-scanner google.com --output json --save result.json
 ```
 
 ### آرگومان‌ها
@@ -50,6 +58,24 @@ port-scanner example.com -s 1 -e 65535 -t 0.5 -w 200
 | `-e, --end` | 1024 | پایان محدوده پورت |
 | `-t, --timeout` | 1.0 | timeout هر اتصال (ثانیه) |
 | `-w, --workers` | 100 | تعداد thread های موازی |
+| `-o, --output` | text | فرمت خروجی: `text` یا `json` |
+| `--save` | - | ذخیره خروجی JSON در فایل |
+
+### نمونه خروجی JSON
+
+```json
+{
+  "host": "google.com",
+  "ip": "142.250.185.46",
+  "range": { "start": 1, "end": 1024 },
+  "duration_seconds": 3.21,
+  "open_ports_count": 2,
+  "open_ports": [
+    { "port": 80, "service": "http" },
+    { "port": 443, "service": "https" }
+  ]
+}
+```
 
 ---
 
