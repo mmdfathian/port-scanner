@@ -5,11 +5,27 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "port-scanner"
 version = "1.0.0"
-description = "ابزار اسکن پورت‌های شبکه با پایتون"
+description = "A fast Python port scanner with parallel scanning support"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["rich>=13.0"]
+authors = [{ name = "mmdfathian" }]
+keywords = ["port-scanner", "network", "security", "cli"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: System :: Networking",
+    "Environment :: Console",
+]
+
+[project.urls]
+Homepage = "https://github.com/mmdfathian/port-scanner"
+Repository = "https://github.com/mmdfathian/port-scanner"
+Issues = "https://github.com/mmdfathian/port-scanner/issues"
 
 [project.scripts]
 port-scanner = "port_scanner.cli:main"
@@ -31,3 +47,4 @@ line-length = 100
 
 [tool.black]
 line-length = 100
+target-version = ["py311"]
