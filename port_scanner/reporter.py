@@ -1,5 +1,11 @@
-def print_report(host: str, ip: str, open_ports: list[dict],
-                 start_port: int, end_port: int, duration: float) -> None:
+def print_report(
+    host: str,
+    ip: str,
+    open_ports: list[dict],
+    start_port: int,
+    end_port: int,
+    duration: float,
+) -> None:
     """
     گزارش نتایج اسکن را چاپ می‌کند.
 
@@ -22,7 +28,7 @@ def print_report(host: str, ip: str, open_ports: list[dict],
     if open_ports:
         print(f"\n  پورت‌های باز ({len(open_ports)} عدد):\n")
         print(f"  {'پورت':<10} {'سرویس'}")
-        print(f"  {'-'*10} {'-'*15}")
+        print(f"  {'-' * 10} {'-' * 15}")
         for entry in open_ports:
             print(f"  {entry['port']:<10} {entry['service']}")
     else:
