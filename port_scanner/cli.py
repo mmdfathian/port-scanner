@@ -1,10 +1,12 @@
 import argparse
 import json
 import time
+
 from rich.console import Console
-from port_scanner.scanner import scan
-from port_scanner.resolver import resolve_host
+
 from port_scanner.reporter import print_report
+from port_scanner.resolver import resolve_host
+from port_scanner.scanner import scan
 
 console = Console()
 
@@ -117,7 +119,9 @@ def main():
 
         # شروع اسکن
         port_count = args.end - args.start + 1
-        console.print(f"[cyan]درحال اسکن {port_count} پورت روی {ip}...[/cyan]")
+        console.print(
+            f"[cyan]درحال اسکن {port_count} پورت روی {ip}...[/cyan]"
+        )
         start_time = time.time()
         open_ports = scan(ip, args.start, args.end, args.timeout, args.workers)
         duration = time.time() - start_time
