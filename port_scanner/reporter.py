@@ -3,6 +3,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
+from rich.progress import Progress
 
 console = Console()
 
@@ -26,13 +27,16 @@ def print_report(
         end_port: پایان محدوده اسکن
         duration: مدت زمان اسکن به ثانیه
     """
+    port_count = end_port - start_port + 1
+    ports_per_second = port_count / duration if duration > 0 else 0
+    
     info = Text()
     info.append("هدف    : ", style="bold cyan")
     info.append(f"{host} ({ip})\n", style="white")
     info.append("محدوده : ", style="bold cyan")
-    info.append(f"{start_port} - {end_port}\n", style="white")
+    info.append(f"{start_port} - {end_port} ({port_count} پورت)\n", style="white")
     info.append("زمان   : ", style="bold cyan")
-    info.append(f"{duration:.2f} ثانیه", style="white")
+    info.append(f"{duration:.2f} ثانیه ({ports_per_second:.0f} پورت/ثانیه)", style="white")
 
     console.print(Panel(info, title="[bold blue]گزارش اسکن پورت[/bold blue]", expand=False))
 
