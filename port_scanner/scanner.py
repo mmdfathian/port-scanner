@@ -1,23 +1,43 @@
 import socket
 import concurrent.futures
+import time
 
 
-def scan_port(host: str, port: int, timeout: float = 1.0) -> tuple[int, bool, str]:
-    """یک پورت را اسکن می‌کند."""
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(timeout)
-            result = sock.connect_ex((host, port))
-            is_open = result == 0
-            service = ""
-            if is_open:
-                try:
-                    service = socket.getservbyport(port)
-                except OSError:
-                    service = "unknown"
-            return port, is_open, service
-    except socket.error:
-        return port, False, ""
+def scan_port(host: str, port: int, timeout: float = 1.0, retries: int = 1) -> tuple[int, bool, str]:
+    """
+    یک پورت را اسکن می‌کند با امکان retry.
+    
+    Args:
+        host: آدرس IP هدف
+        port: شماره پورت
+        timeout: timeout برای هر اتصال (ثانیه)
+        retries: تعداد تلاش‌های دوباره در صورت شکست
+    
+    Returns:
+        tuple: (port, is_open, service_name)
+    """
+    for attempt in range(retries):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(timeout)
+                result = sock.connect_ex((host, port))
+                is_open = result == 0
+                service = ""
+                if is_open:
+                    try:
+                        service = socket.getservbyport(port)
+                    except OSError:
+                        service = "unknown"
+                return port, is_open, service
+        except socket.timeout:
+            if attempt < retries - 1:
+                time.sleep(0.1)  # مکث قبل از تلاش دوباره
+                continue
+            return port, False, ""
+        except socket.error:
+            return port, False, ""
+    
+    return port, False, ""
 
 
 def scan(
