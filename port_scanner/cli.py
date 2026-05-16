@@ -56,13 +56,27 @@ def build_parser():
     return parser
 
 
+def validate_port_range(start: int, end: int) -> bool:
+    """اعتبار‌سنجی محدوده پورت."""
+    if not (1 <= start <= 65535):
+        console.print(f"[red]خطا: پورت شروع باید بین 1 و 65535 باشد (درخواستی: {start})[/red]")
+        return False
+    if not (1 <= end <= 65535):
+        console.print(f"[red]خطا: پورت پایان باید بین 1 و 65535 باشد (درخواستی: {end})[/red]")
+        return False
+    if start > end:
+        console.print("[red]خطا: پورت شروع باید کمتر یا مساوی پورت پایان باشد[/red]")
+        return False
+    return True
+
+
 def output_json(host, ip, open_ports, start, end, duration_seconds, save_path):
     """خروجی نتایج به فرمت JSON."""
     data = {
         "host": host,
         "ip": ip,
-        "range": f"{start}-{end}",
-        "duration_seconds": duration_seconds,
+        "range": {"start": start, "end": end},
+        "duration_seconds": round(duration_seconds, 2),
         "open_ports_count": len(open_ports),
         "open_ports": open_ports,
     }
@@ -81,8 +95,7 @@ def main():
     args = parser.parse_args()
 
     # اعتبار‌سنجی محدوده پورت
-    if args.start > args.end:
-        console.print("[red]خطا: پورت شروع باید کمتر یا مساوی پورت پایان باشد[/red]")
+    if not validate_port_range(args.start, args.end):
         raise SystemExit(1)
 
     # اعتبار‌سنجی فلگ --save
@@ -97,7 +110,10 @@ def main():
         console.print(f"[green]✓[/green] {args.host} -> {ip}\n")
 
         # شروع اسکن
-        console.print(f"[cyan]درحال اسکن پورت‌های {ip}...[/cyan]")
+        port_count = args.end - args.start + 1
+        console.print(
+            f"[cyan]درحال اسکن {port_count} پورت روی {ip}...[/cyan]"
+        )
         start_time = time.time()
         open_ports = scan(ip, args.start, args.end, args.timeout, args.workers)
         duration = time.time() - start_time
