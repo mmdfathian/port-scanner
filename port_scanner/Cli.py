@@ -9,17 +9,17 @@ from port_scanner.reporter import print_report
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Port Scanner حرفه‌ای با پایتون",
-        epilog="مثال: port-scanner google.com -s 1 -e 1024"
+        epilog="مثال: port-scanner google.com -s 1 -e 1024",
     )
     parser.add_argument("host", help="آدرس IP یا دامنه هدف")
-    parser.add_argument("-s", "--start", type=int, default=1,
-                        help="شروع پورت (پیش‌فرض: 1)")
-    parser.add_argument("-e", "--end", type=int, default=1024,
-                        help="پایان پورت (پیش‌فرض: 1024)")
-    parser.add_argument("-t", "--timeout", type=float, default=1.0,
-                        help="timeout به ثانیه (پیش‌فرض: 1.0)")
-    parser.add_argument("-w", "--workers", type=int, default=100,
-                        help="تعداد thread (پیش‌فرض: 100)")
+    parser.add_argument("-s", "--start", type=int, default=1, help="شروع پورت (پیش‌فرض: 1)")
+    parser.add_argument("-e", "--end", type=int, default=1024, help="پایان پورت (پیش‌فرض: 1024)")
+    parser.add_argument(
+        "-t", "--timeout", type=float, default=1.0, help="timeout به ثانیه (پیش‌فرض: 1.0)"
+    )
+    parser.add_argument(
+        "-w", "--workers", type=int, default=100, help="تعداد thread (پیش‌فرض: 100)"
+    )
     return parser
 
 
