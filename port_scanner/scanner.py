@@ -3,16 +3,18 @@ import concurrent.futures
 import time
 
 
-def scan_port(host: str, port: int, timeout: float = 1.0, retries: int = 1) -> tuple[int, bool, str]:
+def scan_port(
+    host: str, port: int, timeout: float = 1.0, retries: int = 1
+) -> tuple[int, bool, str]:
     """
     یک پورت را اسکن می‌کند با امکان retry.
-    
+
     Args:
         host: آدرس IP هدف
         port: شماره پورت
         timeout: timeout برای هر اتصال (ثانیه)
         retries: تعداد تلاش‌های دوباره در صورت شکست
-    
+
     Returns:
         tuple: (port, is_open, service_name)
     """
@@ -36,7 +38,7 @@ def scan_port(host: str, port: int, timeout: float = 1.0, retries: int = 1) -> t
             return port, False, ""
         except socket.error:
             return port, False, ""
-    
+
     return port, False, ""
 
 
@@ -64,7 +66,9 @@ def scan(
     ports = range(start_port, end_port + 1)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(scan_port, host, port, timeout): port for port in ports}
+        futures = {
+            executor.submit(scan_port, host, port, timeout): port for port in ports
+        }
         for future in concurrent.futures.as_completed(futures):
             port, is_open, service = future.result()
             if is_open:
