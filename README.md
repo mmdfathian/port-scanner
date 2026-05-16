@@ -9,9 +9,11 @@
 ## ✨ ویژگی‌ها
 
 - اسکن موازی با ThreadPoolExecutor (بسیار سریع)
+- خروجی رنگی و زیبا با کتابخانه `rich`
+- نمایش spinner انیمیشن حین اسکن
 - نمایش نام سرویس هر پورت (http، ssh، ftp و ...)
 - پشتیبانی از دامنه و IP
-- گزارش مرتب با زمان اجرا
+- گزارش جدولی با زمان اجرا
 - رابط command line کامل
 
 ---
@@ -19,7 +21,7 @@
 ## 📦 نصب
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/port-scanner.git
+git clone https://github.com/mmdfathian/port-scanner.git
 cd port-scanner
 pip install -e .
 ```
@@ -56,6 +58,27 @@ port-scanner example.com -s 1 -e 65535 -t 0.5 -w 200
 ```bash
 pip install -e ".[dev]"
 pytest
+```
+
+---
+
+## 🗂️ ساختار پروژه
+
+```
+port-scanner/
+├── port_scanner/
+│   ├── __init__.py
+│   ├── scanner.py       # منطق اسکن پورت
+│   ├── resolver.py      # تبدیل دامنه به IP
+│   ├── reporter.py      # نمایش رنگی گزارش با rich
+│   └── cli.py           # رابط command line
+├── tests/
+│   ├── test_scanner.py
+│   └── test_resolver.py
+├── .github/workflows/
+│   ├── ci.yml           # اجرای خودکار تست
+│   └── publish.yml      # انتشار روی PyPI
+└── pyproject.toml
 ```
 
 ---
