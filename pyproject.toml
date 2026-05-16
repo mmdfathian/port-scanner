@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "port-scanner"
+version = "1.0.0"
+description = "ابزار اسکن پورت‌های شبکه با پایتون"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+port-scanner = "port_scanner.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.1",
+    "black>=23.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=port_scanner --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 100
+
+[tool.black]
+line-length = 100
