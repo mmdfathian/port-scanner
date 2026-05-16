@@ -59,13 +59,19 @@ def build_parser():
 def validate_port_range(start: int, end: int) -> bool:
     """اعتبار‌سنجی محدوده پورت."""
     if not (1 <= start <= 65535):
-        console.print(f"[red]خطا: پورت شروع باید بین 1 و 65535 باشد (درخواستی: {start})[/red]")
+        console.print(
+            f"[red]خطا: پورت شروع باید بین 1 و 65535 باشد (درخواستی: {start})[/red]"
+        )
         return False
     if not (1 <= end <= 65535):
-        console.print(f"[red]خطا: پورت پایان باید بین 1 و 65535 باشد (درخواستی: {end})[/red]")
+        console.print(
+            f"[red]خطا: پورت پایان باید بین 1 و 65535 باشد (درخواستی: {end})[/red]"
+        )
         return False
     if start > end:
-        console.print("[red]خطا: پورت شروع باید کمتر یا مساوی پورت پایان باشد[/red]")
+        console.print(
+            "[red]خطا: پورت شروع باید کمتر یا مساوی پورت پایان باشد[/red]"
+        )
         return False
     return True
 
@@ -111,16 +117,16 @@ def main():
 
         # شروع اسکن
         port_count = args.end - args.start + 1
-        console.print(
-            f"[cyan]درحال اسکن {port_count} پورت روی {ip}...[/cyan]"
-        )
+        console.print(f"[cyan]درحال اسکن {port_count} پورت روی {ip}...[/cyan]")
         start_time = time.time()
         open_ports = scan(ip, args.start, args.end, args.timeout, args.workers)
         duration = time.time() - start_time
 
         # نمایش نتایج
         if args.output == "json":
-            output_json(args.host, ip, open_ports, args.start, args.end, duration, args.save)
+            output_json(
+                args.host, ip, open_ports, args.start, args.end, duration, args.save
+            )
         else:
             print_report(args.host, ip, open_ports, args.start, args.end, duration)
 
