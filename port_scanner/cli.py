@@ -1,7 +1,6 @@
 import argparse
 import json
 import time
-import sys
 from rich.console import Console
 from port_scanner.scanner import scan
 from port_scanner.resolver import resolve_host
