@@ -1,4 +1,6 @@
 import argparse
+import json
+import sys
 from datetime import datetime
 
 from rich.console import Console
@@ -25,7 +27,47 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-w", "--workers", type=int, default=100, help="تعداد thread (پیش‌فرض: 100)"
     )
+    parser.add_argument(
+        "-o",
+        "--output",
+        choices=["text", "json"],
+        default="text",
+        help="فرمت خروجی: text یا json (پیش‌فرض: text)",
+    )
+    parser.add_argument(
+        "--save",
+        metavar="FILE",
+        help="ذخیره خروجی JSON در فایل (فقط با --output json)",
+    )
     return parser
+
+
+def output_json(
+    host: str,
+    ip: str,
+    open_ports: list[dict],
+    start_port: int,
+    end_port: int,
+    duration: float,
+    save_path: str | None,
+) -> None:
+    """خروجی را به فرمت JSON چاپ یا ذخیره می‌کند."""
+    result = {
+        "host": host,
+        "ip": ip,
+        "range": {"start": start_port, "end": end_port},
+        "duration_seconds": round(duration, 2),
+        "open_ports_count": len(open_ports),
+        "open_ports": open_ports,
+    }
+    json_str = json.dumps(result, ensure_ascii=False, indent=2)
+
+    if save_path:
+        with open(save_path, "w", encoding="utf-8") as f:
+            f.write(json_str)
+        console.print(f"[green]✓ خروجی JSON در فایل ذخیره شد:[/green] [white]{save_path}[/white]")
+    else:
+        print(json_str)
 
 
 def main():
@@ -34,13 +76,18 @@ def main():
 
     if args.start < 1 or args.end > 65535 or args.start > args.end:
         console.print("[bold red]خطا:[/bold red] محدوده پورت نامعتبر است. (1 تا 65535)")
-        return
+        sys.exit(1)
 
-    console.print(f"\n[bold cyan]شروع اسکن:[/bold cyan] [white]{args.host}[/white]")
-    console.print(
-        f"[bold cyan]زمان شروع:[/bold cyan] "
-        f"[white]{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}[/white]\n"
-    )
+    if args.save and args.output != "json":
+        console.print("[bold red]خطا:[/bold red] گزینه --save فقط با --output json کار می‌کند.")
+        sys.exit(1)
+
+    if args.output == "text":
+        console.print(f"\n[bold cyan]شروع اسکن:[/bold cyan] [white]{args.host}[/white]")
+        console.print(
+            f"[bold cyan]زمان شروع:[/bold cyan] "
+            f"[white]{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}[/white]\n"
+        )
 
     try:
         ip = resolve_host(args.host)
@@ -50,6 +97,7 @@ def main():
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             transient=True,
+            disable=args.output == "json" and not args.save,
         ) as progress:
             progress.add_task(
                 f"[yellow]در حال اسکن پورت‌های {args.start} تا {args.end}...[/yellow]",
@@ -64,10 +112,15 @@ def main():
             )
 
         duration = (datetime.now() - start_time).total_seconds()
-        print_report(args.host, ip, open_ports, args.start, args.end, duration)
+
+        if args.output == "json":
+            output_json(args.host, ip, open_ports, args.start, args.end, duration, args.save)
+        else:
+            print_report(args.host, ip, open_ports, args.start, args.end, duration)
 
     except ValueError as e:
         console.print(f"[bold red]خطا:[/bold red] {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
