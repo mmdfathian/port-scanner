@@ -1,7 +1,5 @@
 # 🔍 Port Scanner
 
-ابزار سریع و حرفه‌ای اسکن پورت‌های شبکه نوشته شده با پایتون خالص.
-
 ![CI](https://github.com/mmdfathian/port-scanner/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
