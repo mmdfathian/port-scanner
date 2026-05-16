@@ -28,16 +28,20 @@ def print_report(
     """
     port_count = end_port - start_port + 1
     ports_per_second = port_count / duration if duration > 0 else 0
-    
+
     info = Text()
     info.append("هدف    : ", style="bold cyan")
     info.append(f"{host} ({ip})\n", style="white")
     info.append("محدوده : ", style="bold cyan")
     info.append(f"{start_port} - {end_port} ({port_count} پورت)\n", style="white")
     info.append("زمان   : ", style="bold cyan")
-    info.append(f"{duration:.2f} ثانیه ({ports_per_second:.0f} پورت/ثانیه)", style="white")
+    info.append(
+        f"{duration:.2f} ثانیه ({ports_per_second:.0f} پورت/ثانیه)", style="white"
+    )
 
-    console.print(Panel(info, title="[bold blue]گزارش اسکن پورت[/bold blue]", expand=False))
+    console.print(
+        Panel(info, title="[bold blue]گزارش اسکن پورت[/bold blue]", expand=False)
+    )
 
     if open_ports:
         table = Table(
@@ -54,4 +58,6 @@ def print_report(
 
         console.print(table)
     else:
-        console.print(Panel("[bold red]هیچ پورت بازی یافت نشد.[/bold red]", expand=False))
+        console.print(
+            Panel("[bold red]هیچ پورت بازی یافت نشد.[/bold red]", expand=False)
+        )
