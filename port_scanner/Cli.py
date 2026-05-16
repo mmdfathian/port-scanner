@@ -1,9 +1,14 @@
 import argparse
 from datetime import datetime
 
+from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TextColumn
+
 from port_scanner.resolver import resolve_host
 from port_scanner.scanner import scan
 from port_scanner.reporter import print_report
+
+console = Console()
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -28,29 +33,41 @@ def main():
     args = parser.parse_args()
 
     if args.start < 1 or args.end > 65535 or args.start > args.end:
-        print("خطا: محدوده پورت نامعتبر است. (1 تا 65535)")
+        console.print("[bold red]خطا:[/bold red] محدوده پورت نامعتبر است. (1 تا 65535)")
         return
 
-    print(f"\nشروع اسکن {args.host} ...")
-    print(f"زمان شروع: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    console.print(f"\n[bold cyan]شروع اسکن:[/bold cyan] [white]{args.host}[/white]")
+    console.print(
+        f"[bold cyan]زمان شروع:[/bold cyan] "
+        f"[white]{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}[/white]\n"
+    )
 
     try:
         ip = resolve_host(args.host)
         start_time = datetime.now()
 
-        open_ports = scan(
-            host=ip,
-            start_port=args.start,
-            end_port=args.end,
-            timeout=args.timeout,
-            max_workers=args.workers,
-        )
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            transient=True,
+        ) as progress:
+            progress.add_task(
+                f"[yellow]در حال اسکن پورت‌های {args.start} تا {args.end}...[/yellow]",
+                total=None,
+            )
+            open_ports = scan(
+                host=ip,
+                start_port=args.start,
+                end_port=args.end,
+                timeout=args.timeout,
+                max_workers=args.workers,
+            )
 
         duration = (datetime.now() - start_time).total_seconds()
         print_report(args.host, ip, open_ports, args.start, args.end, duration)
 
     except ValueError as e:
-        print(f"خطا: {e}")
+        console.print(f"[bold red]خطا:[/bold red] {e}")
 
 
 if __name__ == "__main__":
