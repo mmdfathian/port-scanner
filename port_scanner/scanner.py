@@ -3,7 +3,7 @@ import concurrent.futures
 
 
 def scan_port(host: str, port: int, timeout: float = 1.0) -> tuple[int, bool, str]:
-    """ÛŒÚ© Ù¾ÙˆØ±Øª Ø±Ø§ Ø§Ø³Ú©Ù† Ù…ÛŒâ€ŒÚ©Ù†Ø¯."""
+    """یک پورت را اسکن می‌کند."""
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(timeout)
@@ -28,17 +28,17 @@ def scan(
     max_workers: int = 100,
 ) -> list[dict]:
     """
-    Ù¾ÙˆØ±Øªâ€ŒÙ‡Ø§ÛŒ ÛŒÚ© Ù‡Ø§Ø³Øª Ø±Ø§ Ø§Ø³Ú©Ù† Ù…ÛŒâ€ŒÚ©Ù†Ø¯.
+    پورت‌های یک هاست را اسکن می‌کند.
 
     Args:
-        host: Ø¢Ø¯Ø±Ø³ IP (Ø§Ø² Ù‚Ø¨Ù„ resolve Ø´Ø¯Ù‡)
-        start_port: Ø´Ø±ÙˆØ¹ Ù…Ø­Ø¯ÙˆØ¯Ù‡ Ù¾ÙˆØ±Øª
-        end_port: Ù¾Ø§ÛŒØ§Ù† Ù…Ø­Ø¯ÙˆØ¯Ù‡ Ù¾ÙˆØ±Øª
-        timeout: timeout Ø¨Ø±Ø§ÛŒ Ù‡Ø± Ø§ØªØµØ§Ù„ (Ø«Ø§Ù†ÛŒÙ‡)
-        max_workers: ØªØ¹Ø¯Ø§Ø¯ thread Ù‡Ø§ÛŒ Ù…ÙˆØ§Ø²ÛŒ
+        host: آدرس IP (از قبل resolve شده)
+        start_port: شروع محدوده پورت
+        end_port: پایان محدوده پورت
+        timeout: timeout برای هر اتصال (ثانیه)
+        max_workers: تعداد thread های موازی
 
     Returns:
-        Ù„ÛŒØ³Øª Ù¾ÙˆØ±Øªâ€ŒÙ‡Ø§ÛŒ Ø¨Ø§Ø² Ø¨Ù‡ ØµÙˆØ±Øª dict
+        لیست پورت‌های باز به صورت dict
     """
     open_ports = []
     ports = range(start_port, end_port + 1)
