@@ -1,45 +1,23 @@
-import socket
 import concurrent.futures
-import time
+import socket
 
 
-def scan_port(
-    host: str, port: int, timeout: float = 1.0, retries: int = 1
-) -> tuple[int, bool, str]:
-    """
-    یک پورت را اسکن می‌کند با امکان retry.
-
-    Args:
-        host: آدرس IP هدف
-        port: شماره پورت
-        timeout: timeout برای هر اتصال (ثانیه)
-        retries: تعداد تلاش‌های دوباره در صورت شکست
-
-    Returns:
-        tuple: (port, is_open, service_name)
-    """
-    for attempt in range(retries):
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(timeout)
-                result = sock.connect_ex((host, port))
-                is_open = result == 0
-                service = ""
-                if is_open:
-                    try:
-                        service = socket.getservbyport(port)
-                    except OSError:
-                        service = "unknown"
-                return port, is_open, service
-        except socket.timeout:
-            if attempt < retries - 1:
-                time.sleep(0.1)  # مکث قبل از تلاش دوباره
-                continue
-            return port, False, ""
-        except socket.error:
-            return port, False, ""
-
-    return port, False, ""
+def scan_port(host: str, port: int, timeout: float = 1.0) -> tuple[int, bool, str]:
+    """یک پورت را اسکن می‌کند."""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(timeout)
+            result = sock.connect_ex((host, port))
+            is_open = result == 0
+            service = ""
+            if is_open:
+                try:
+                    service = socket.getservbyport(port)
+                except OSError:
+                    service = "unknown"
+            return port, is_open, service
+    except socket.error:
+        return port, False, ""
 
 
 def scan(
@@ -49,26 +27,12 @@ def scan(
     timeout: float = 1.0,
     max_workers: int = 100,
 ) -> list[dict]:
-    """
-    پورت‌های یک هاست را اسکن می‌کند.
-
-    Args:
-        host: آدرس IP (از قبل resolve شده)
-        start_port: شروع محدوده پورت
-        end_port: پایان محدوده پورت
-        timeout: timeout برای هر اتصال (ثانیه)
-        max_workers: تعداد thread های موازی
-
-    Returns:
-        لیست پورت‌های باز به صورت dict
-    """
+    """پورت‌های یک هاست را اسکن می‌کند."""
     open_ports = []
     ports = range(start_port, end_port + 1)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(scan_port, host, port, timeout): port for port in ports
-        }
+        futures = {executor.submit(scan_port, host, port, timeout): port for port in ports}
         for future in concurrent.futures.as_completed(futures):
             port, is_open, service = future.result()
             if is_open:
