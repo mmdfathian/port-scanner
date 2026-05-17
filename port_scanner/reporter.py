@@ -15,33 +15,16 @@ def print_report(
     end_port: int,
     duration: float,
 ) -> None:
-    """
-    گزارش رنگی نتایج اسکن را چاپ می‌کند.
-
-    Args:
-        host: نام هاست یا IP اصلی
-        ip: آدرس IP resolve شده
-        open_ports: لیست پورت‌های باز
-        start_port: شروع محدوده اسکن
-        end_port: پایان محدوده اسکن
-        duration: مدت زمان اسکن به ثانیه
-    """
-    port_count = end_port - start_port + 1
-    ports_per_second = port_count / duration if duration > 0 else 0
-
+    """گزارش رنگی نتایج اسکن را چاپ می‌کند."""
     info = Text()
     info.append("هدف    : ", style="bold cyan")
     info.append(f"{host} ({ip})\n", style="white")
     info.append("محدوده : ", style="bold cyan")
-    info.append(f"{start_port} - {end_port} ({port_count} پورت)\n", style="white")
+    info.append(f"{start_port} - {end_port}\n", style="white")
     info.append("زمان   : ", style="bold cyan")
-    info.append(
-        f"{duration:.2f} ثانیه ({ports_per_second:.0f} پورت/ثانیه)", style="white"
-    )
+    info.append(f"{duration:.2f} ثانیه", style="white")
 
-    console.print(
-        Panel(info, title="[bold blue]گزارش اسکن پورت[/bold blue]", expand=False)
-    )
+    console.print(Panel(info, title="[bold blue]گزارش اسکن پورت[/bold blue]", expand=False))
 
     if open_ports:
         table = Table(
@@ -52,12 +35,8 @@ def print_report(
         )
         table.add_column("پورت", style="bold green", justify="center", min_width=8)
         table.add_column("سرویس", style="yellow", justify="center", min_width=15)
-
         for entry in open_ports:
             table.add_row(str(entry["port"]), entry["service"] or "-")
-
         console.print(table)
     else:
-        console.print(
-            Panel("[bold red]هیچ پورت بازی یافت نشد.[/bold red]", expand=False)
-        )
+        console.print(Panel("[bold red]هیچ پورت بازی یافت نشد.[/bold red]", expand=False))
